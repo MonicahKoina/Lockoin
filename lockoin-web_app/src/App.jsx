@@ -1,35 +1,118 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
-import './App.css'
+import { useState } from "react";
+import "./index.css";
+import StripeContainer from "./components/StripeContainer";
 
 function App() {
-  const [count, setCount] = useState(0)
+  const [showCheckout, setShowCheckout] = useState(false);
+  const [sellerId, setSellerId] = useState("");
+  const [productName, setProductName] = useState("");
+  const [amount, setAmount] = useState("");
+  const [quantity, setQuantity] = useState(1);
+  const [deliveryDetails, setDeliveryDetails] = useState("");
+
+  const handleCheckout = () => {
+    if (!sellerId || !productName || !amount || !deliveryDetails) {
+      alert("Please fill in all fields to proceed!");
+      return;
+    }
+    setShowCheckout(true);
+  };
 
   return (
-    <>
-      <div>
-        <a href="https://vite.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
-      </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.jsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
-    </>
-  )
+    <div className="App">
+      <h1>New Escrow Transaction</h1>
+      {showCheckout ? (
+        <StripeContainer
+          sellerId={sellerId}
+          productName={productName}
+          amount={amount}
+          quantity={quantity}
+          deliveryDetails={deliveryDetails}
+        />
+      ) : (
+        <>
+          <form
+            onSubmit={(e) => {
+              e.preventDefault();
+              handleCheckout();
+            }}
+          >
+            <div className="form-group">
+              <label htmlFor="sellerId">Seller ID:</label>
+              <input
+                type="text"
+                id="sellerId"
+                value={sellerId}
+                onChange={(e) => setSellerId(e.target.value)}
+                placeholder="Enter Seller ID"
+                required
+              />
+            </div>
+
+            <div className="form-group">
+              <label htmlFor="productName">Product Name:</label>
+              <input
+                type="text"
+                id="productName"
+                value={productName}
+                onChange={(e) => setProductName(e.target.value)}
+                placeholder="e.g., Black Shades"
+                required
+              />
+            </div>
+
+            <div className="form-group">
+              <label htmlFor="amount">Amount (in cents):</label>
+              <input
+                type="number"
+                id="amount"
+                value={amount}
+                onChange={(e) => setAmount(e.target.value)}
+                placeholder="Enter amount in cents"
+                required
+              />
+            </div>
+
+            <div className="form-group">
+              <label>Product Quantity:</label>
+              <div className="quantity-controls">
+                <button
+                  type="button"
+                  onClick={() => setQuantity(Math.max(1, quantity - 1))}
+                >
+                  -
+                </button>
+                <input
+                  type="number"
+                  value={quantity}
+                  readOnly
+                  className="quantity-display"
+                />
+                <button type="button" onClick={() => setQuantity(quantity + 1)}>
+                  +
+                </button>
+              </div>
+            </div>
+
+            <div className="form-group">
+              <label htmlFor="deliveryDetails">Delivery Details:</label>
+              <textarea
+                id="deliveryDetails"
+                value={deliveryDetails}
+                onChange={(e) => setDeliveryDetails(e.target.value)}
+                placeholder="Enter delivery instructions or address"
+                required
+              />
+            </div>
+
+            <button type="submit" className="btn">
+              Proceed to Payment
+            </button>
+          </form>
+        </>
+      )}
+    </div>
+  );
 }
 
-export default App
+export default App;
