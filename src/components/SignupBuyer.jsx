@@ -49,7 +49,7 @@ function SignupBuyer() {
     }
   }
   return (
-    <div className="flex h-[100vh]">
+    <section className="flex h-[100vh]">
       <div className="w-1/2 h-full">
         <img src={side} alt="" className="w-full h-full object-cover" />
       </div>
@@ -198,7 +198,7 @@ function SignupBuyer() {
         </form>
         <p className="text-red-500">{errorText}</p>
       </div>
-    </div>
+    </section>
   );
 }
 
