@@ -18,7 +18,7 @@ const GetStarted = () => {
   };
 
   return (
-    <div className="flex h-[87vh]">
+    <div className="flex h-[100vh] -mt-20">
       <div className="w-1/2">
         <img src={slide} alt="Slide" className="w-full h-full object-cover" />
       </div>

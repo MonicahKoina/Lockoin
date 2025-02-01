@@ -1,11 +1,13 @@
 import "react";
 import { Route, Routes } from "react-router-dom";
-import Navbar from "./components/Navbar";
-import Home from "./Pages/Home";
-import GetStarted from "./Pages/GetStarted";
-import SignupSeller from "./Pages/SignupSeller";
-import SignupBuyer from "./Pages/SignupBuyer";
+
+import GetStarted from "./pages/GetStarted";
 import PocketBaseProvider from "./pb/PocketBaseProvider";
+import SignupSeller from "./components/SignupSeller";
+import SignupBuyer from "./components/SignupBuyer";
+import Home from "./Pages/Home";
+import Login from "./Pages/Login";
+import Navbar from "./components/Navbar";
 
 function App() {
   return (
@@ -18,6 +20,7 @@ function App() {
             <Route path="GetStarted" element={<GetStarted />} />
             <Route path="SignupSeller" element={<SignupSeller />} />
             <Route path="SignupBuyer" element={<SignupBuyer />} />
+            <Route path="login" element={<Login />} />
           </Routes>
         </PocketBaseProvider>
       </div>
