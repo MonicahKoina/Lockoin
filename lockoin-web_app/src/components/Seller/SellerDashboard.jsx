@@ -3,9 +3,9 @@ import { Button, Card } from "antd";
 import {
   BankOutlined,
   DollarCircleOutlined,
+  UnorderedListOutlined,
   WalletOutlined,
 } from "@ant-design/icons";
-import Seller from "/assets/seller.jpeg";
 
 const SellerDashboard = () => {
   const navigate = useNavigate();
@@ -17,7 +17,7 @@ const SellerDashboard = () => {
         {/* Transaction Image */}
         <div className="flex justify-center">
           <img
-            src={Seller}
+            src="https://i.pinimg.com/736x/48/d5/d3/48d5d33f5b439bf6a956a38fa42ab4fa.jpg"
             alt="Transaction"
             className="h-auto max-h-[70vh] w-auto"
           />
@@ -42,8 +42,8 @@ const SellerDashboard = () => {
             </Button>
             <Button
               type="primary"
-              icon={<DollarCircleOutlined />}
-              onClick={() => navigate("/seller-orders")}
+              icon={<UnorderedListOutlined />}
+              onClick={() => navigate("/orders")}
             >
               View Orders
             </Button>

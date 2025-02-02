@@ -63,13 +63,13 @@ const SignupBuyer = () => {
   };
 
   return (
-    <section className="flex flex-col-reverse md:flex-row min-h-screen bg-gray-100">
+    <section className="flex flex-col-reverse md:flex-row h-screen bg-gray-100">
       {/* Side Image (Hidden on small screens) */}
       <div className="w-full md:w-1/2 h-64 md:h-full hidden md:block">
         <img
           src={sideImage}
           alt="Signup Side"
-          className="w-full h-full object-cover rounded-t-lg md:rounded-l-lg"
+          className="w-full h-screen  object-cover rounded-t-lg md:rounded-l-lg"
         />
       </div>
 
@@ -119,29 +119,39 @@ const SignupBuyer = () => {
               </Col>
             </Row>
 
-            <Form.Item
-              label="Phone Number"
-              name="phoneNumber"
-              rules={[
-                { required: true, message: "Please enter your phone number." },
-                {
-                  pattern: /^\+?\d{7,15}$/,
-                  message: "Enter a valid phone number.",
-                },
-              ]}
-            >
-              <Input placeholder="+254-712345667" />
-            </Form.Item>
+            <Row gutter={16}>
+              {/* Phone Number and Address side by side */}
+              <Col xs={24} sm={12}>
+                <Form.Item
+                  label="Phone Number"
+                  name="phoneNumber"
+                  rules={[
+                    {
+                      required: true,
+                      message: "Please enter your phone number.",
+                    },
+                    {
+                      pattern: /^\+?\d{7,15}$/,
+                      message: "Enter a valid phone number.",
+                    },
+                  ]}
+                >
+                  <Input placeholder="+254-712345667" />
+                </Form.Item>
+              </Col>
 
-            <Form.Item
-              label="Address"
-              name="address"
-              rules={[
-                { required: true, message: "Please enter your address." },
-              ]}
-            >
-              <Input placeholder="Nairobi" />
-            </Form.Item>
+              <Col xs={24} sm={12}>
+                <Form.Item
+                  label="Address"
+                  name="address"
+                  rules={[
+                    { required: true, message: "Please enter your address." },
+                  ]}
+                >
+                  <Input placeholder="Nairobi" />
+                </Form.Item>
+              </Col>
+            </Row>
 
             <Form.Item
               label="Email"

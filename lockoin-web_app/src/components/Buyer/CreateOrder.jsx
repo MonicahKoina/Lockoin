@@ -83,9 +83,9 @@ const CreateOrder = () => {
         {/* Image Section */}
         <div className="hidden md:block">
           <img
-            src="https://i.pinimg.com/736x/94/e8/1d/94e81d1c34fa16b05b6d6ad9ada21cbe.jpg"
+            src="https://i.pinimg.com/736x/6b/92/3e/6b923e6fb14abd3fc419850db9b2153a.jpg"
             alt="Order"
-            className="w-full h-auto object-cover rounded-lg shadow-lg"
+            className="h-auto max-h-[70vh] w-auto mt-16 "
           />
         </div>
 

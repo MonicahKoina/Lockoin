@@ -21,6 +21,7 @@ import {
   BellOutlined,
   CheckCircleFilled,
   SendOutlined,
+  CarryOutTwoTone,
 } from "@ant-design/icons";
 import Logo from "/assets/Lockoin-logo.png";
 
@@ -49,6 +50,12 @@ function AdminNavbar() {
       onClick: () => navigate("/CreateOrder"),
     },
     {
+      key: "6",
+      icon: <CarryOutTwoTone />,
+      label: "View Orders",
+      onClick: () => navigate("/myorders"),
+    },
+    {
       key: "5",
       icon: <CheckCircleFilled />,
       label: "Verify order",
@@ -60,7 +67,7 @@ function AdminNavbar() {
       key: "1",
       icon: <DashboardOutlined />,
       label: "Dashboard",
-      onClick: () => navigate("/dashboard"),
+      onClick: () => navigate("/SellerDashboard"),
     },
     {
       key: "2",

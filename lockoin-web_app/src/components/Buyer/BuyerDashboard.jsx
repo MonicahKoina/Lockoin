@@ -18,9 +18,9 @@ const BuyerDashboard = () => {
         {/* Transaction Image */}
         <div className="flex justify-center">
           <img
-            src={Transaction}
+            src="https://i.pinimg.com/736x/bf/57/82/bf5782c62349c4bacb4dd6570904cd87.jpg"
             alt="Transaction"
-            className="h-auto max-h-[70vh] w-auto"
+            className="h-auto max-h-[70vh] w-auto mt-16"
           />
         </div>
 
@@ -28,8 +28,9 @@ const BuyerDashboard = () => {
         <div>
           <Card className="bg-blue-400 text-white text-center p-6 rounded-xl shadow-md">
             <div className="text-3xl font-semibold flex items-center justify-center">
-              <DollarCircleOutlined className="mr-2" />
-              {amount.toLocaleString()} KES
+              Balance
+              <br />
+              Kes {amount.toLocaleString()}
             </div>
             <p className="text-lg mt-2">
               <WalletOutlined className="mr-2" /> In Lockoin Account

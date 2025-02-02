@@ -12,13 +12,14 @@ import ProtectedRoute from "../components/private/Private";
 import BuyerDashboard from "../components/Buyer/BuyerDashboard";
 import CreateOrder from "../components/Buyer/CreateOrder";
 import BuyerDispute from "../components/Buyer/BuyerDispute";
-import SellerDashboard from "../components/Seller/sellerDashboard";
 import SellerOrders from "../components/Seller/SellerOrders";
 import Layout from "../Layout/Layout";
 import Support from "../Pages/support/Support";
 import AdminLayout from "../Layout/AdminLayout";
 import Notification from "../components/Seller/Notification";
 import OrderVerification from "../components/Buyer/OrderVerification";
+import MyOrders from "../components/Buyer/MyOrders";
+import SellerDashboard from "../components/Seller/SellerDashboard";
 
 function Routers() {
   return (
@@ -72,16 +73,25 @@ function Routers() {
             </ProtectedRoute>
           }
         />
+        <Route
+          path="/myorders"
+          element={
+            <ProtectedRoute>
+              <MyOrders />
+            </ProtectedRoute>
+          }
+        />
 
         {/* Seller Protected Routes */}
         <Route
-          path="/dashboard"
+          path="/SellerDashboard"
           element={
             <ProtectedRoute>
               <SellerDashboard />
             </ProtectedRoute>
           }
         />
+
         <Route
           path="/orders"
           element={

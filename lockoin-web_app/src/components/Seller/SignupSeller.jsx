@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { Button, Input, Form, Checkbox, Alert, message } from "antd";
+import { Button, Input, Form, Checkbox, Alert, message, Row, Col } from "antd";
 import { usePocketBase } from "../../pb/PocketBaseProvider";
 import sideImage from "/assets/Lockoin-side-image1.png";
 import { ArrowLeftOutlined } from "@ant-design/icons";
@@ -47,12 +47,11 @@ function SignupSeller() {
       const record = await pb.collection("users").create(data);
       console.log("✅ Seller created:", record);
 
-      // Show success message and redirect to login after 2 seconds
-      message.success(
-        "Account created successfully! Redirecting you to login...",
-        2
-      );
-      setTimeout(() => navigate("/login"), 2000);
+      // Show success message
+      message.success("Account created successfully! Log in to continue.");
+
+      // Redirect to login immediately after success
+      navigate("/login");
     } catch (error) {
       console.error("Signup error:", error);
       if (error.response && error.response.data) {
@@ -67,9 +66,9 @@ function SignupSeller() {
   };
 
   return (
-    <div className="flex flex-col md:flex-row min-h-screen overflow-hidden">
+    <div className="flex flex-col md:flex-row h-screen overflow-hidden">
       {/* Side Image */}
-      <div className="hidden md:flex md:w-1/2 min-h-screen">
+      <div className="hidden md:flex md:w-1/2 h-screen">
         <img
           src={sideImage}
           alt="side-image"
@@ -78,7 +77,7 @@ function SignupSeller() {
       </div>
 
       {/* Signup Form */}
-      <div className="w-full md:w-1/2 flex items-center justify-center bg-white px-4 md:px-6 min-h-screen">
+      <div className="w-full md:w-1/2 flex items-center justify-center bg-white px-4 md:px-6 h-screen">
         <div className="w-full max-w-lg flex flex-col">
           {/* Display error message */}
           {errorText && (
@@ -94,44 +93,66 @@ function SignupSeller() {
           </button>
 
           <Form onFinish={handleSubmit} layout="vertical">
-            <Form.Item
-              label="Business Name"
-              name="businessName"
-              rules={[
-                { required: true, message: "Please input your business name!" },
-              ]}
-            >
-              <Input placeholder="Nike Footwear" />
-            </Form.Item>
+            <Row gutter={16}>
+              {/* Business Name and Location side by side */}
+              <Col span={12}>
+                <Form.Item
+                  label="Business Name"
+                  name="businessName"
+                  rules={[
+                    {
+                      required: true,
+                      message: "Please input your business name!",
+                    },
+                  ]}
+                >
+                  <Input placeholder="Nike Footwear" />
+                </Form.Item>
+              </Col>
 
-            <Form.Item
-              label="Business Location (Optional)"
-              name="businessLocation"
-            >
-              <Input placeholder="Limuru" />
-            </Form.Item>
+              <Col span={12}>
+                <Form.Item
+                  label="Business Location (Optional)"
+                  name="businessLocation"
+                >
+                  <Input placeholder="Limuru" />
+                </Form.Item>
+              </Col>
+            </Row>
 
-            <Form.Item
-              label="Website"
-              name="website"
-              rules={[{ type: "url", message: "Please input a valid URL!" }]}
-            >
-              <Input placeholder="https://www.yourbusiness.com" />
-            </Form.Item>
+            <Row gutter={16}>
+              {/* Website and Phone Number side by side */}
+              <Col span={12}>
+                <Form.Item
+                  label="Website"
+                  name="website"
+                  rules={[
+                    { type: "url", message: "Please input a valid URL!" },
+                  ]}
+                >
+                  <Input placeholder="https://www.yourbusiness.com" />
+                </Form.Item>
+              </Col>
 
-            <Form.Item
-              label="Phone Number"
-              name="phoneNumber"
-              rules={[
-                { required: true, message: "Please input your phone number!" },
-                {
-                  pattern: /^\+?\d{7,15}$/,
-                  message: "Enter a valid phone number.",
-                },
-              ]}
-            >
-              <Input placeholder="+254-712345667" />
-            </Form.Item>
+              <Col span={12}>
+                <Form.Item
+                  label="Phone Number"
+                  name="phoneNumber"
+                  rules={[
+                    {
+                      required: true,
+                      message: "Please input your phone number!",
+                    },
+                    {
+                      pattern: /^\+?\d{7,15}$/,
+                      message: "Enter a valid phone number.",
+                    },
+                  ]}
+                >
+                  <Input placeholder="+254-712345667" />
+                </Form.Item>
+              </Col>
+            </Row>
 
             <Form.Item
               label="Email"

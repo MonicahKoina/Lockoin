@@ -16,13 +16,11 @@ const SellerOrders = () => {
   useEffect(() => {
     const fetchOrders = async () => {
       try {
-        console.log("Fetching orders for seller ID:", sellerId);
         const records = await pb.collection("orders").getFullList({
           filter: `seller_id = "${sellerId}"`,
           sort: "-created",
-          expand: "buyer_id", // Expanding the buyer_id field to get buyer details
+          expand: "buyer_id",
         });
-        console.log("Fetched orders:", records);
         setOrders(records);
       } catch (error) {
         console.error("Error fetching orders:", error);
@@ -33,12 +31,11 @@ const SellerOrders = () => {
   }, [pb, sellerId]);
 
   useEffect(() => {
-    const unsubscribe = pb.collection("orders").subscribe("*", async (e) => {
-      console.log("Real-time update received:", e);
+    const unsubscribe = pb.collection("orders").subscribe("*", async () => {
       const updatedRecords = await pb.collection("orders").getFullList({
         filter: `seller_id = "${sellerId}"`,
         sort: "-created",
-        expand: "buyer_id", // Expanding the buyer_id field to get buyer details
+        expand: "buyer_id",
       });
       setOrders(updatedRecords);
     });
@@ -67,7 +64,6 @@ const SellerOrders = () => {
         status: "Declined",
       });
 
-      // Create notification for the buyer
       await pb.collection("notifications").create({
         user_id: order.buyer_id,
         message: `Your order for ${order.product_name} has been declined by the seller.`,
@@ -82,18 +78,18 @@ const SellerOrders = () => {
   };
 
   return (
-    <div className="mt-6 flex flex-col lg:flex-row h-screen">
-      {/* Left Side - Image, hidden on small screens */}
-      <div className="hidden lg:block w-full lg:w-1/2 h-1/2 lg:h-full">
+    <div className="flex flex-col lg:flex-row lg:h-screen bg-white">
+      {/* Left Side - Image */}
+      <div className="hidden lg:block lg:w-1/2 lg:h-full mt-10">
         <img
-          src="https://i.pinimg.com/736x/ae/79/c3/ae79c3631efaa65805cdf99f460c84c6.jpg"
+          src="https://i.pinimg.com/736x/df/0e/6c/df0e6cc2eacca5443b1dbba1471e8948.jpg"
           alt="Seller Orders"
-          className="w-full h-full object-cover"
+          className="h-auto max-h-[70vh] w-auto"
         />
       </div>
 
       {/* Right Side - Orders List */}
-      <div className="w-full lg:w-1/2 h-1/2 lg:h-full p-8 overflow-y-auto bg-white">
+      <div className="w-full lg:w-1/2 p-6 overflow-y-auto">
         <Title level={3} className="text-center">
           Your Orders
         </Title>
@@ -104,9 +100,8 @@ const SellerOrders = () => {
             <List.Item>
               <Card title={`Order: ${item.product_name}`} bordered={false}>
                 <p>
-                  <strong>Buyer:</strong>
-                  {item.expand?.buyer_id?.firstName || "N/A"}{" "}
-                  {item.expand?.buyer_id?.lastName || "N/A"}
+                  <strong>Buyer:</strong> {item.expand?.buyer_id?.firstName}{" "}
+                  {item.expand?.buyer_id?.lastName}
                 </p>
                 <p>
                   <strong>Quantity:</strong> {item.quantity}
@@ -118,18 +113,19 @@ const SellerOrders = () => {
                   <strong>Delivery Info:</strong>{" "}
                   {item.delivery_info || "Not available"}
                 </p>
-                <Button type="primary" onClick={() => handleAccept(item.id)}>
-                  Accept
-                </Button>
-                <Button
-                  className="bg-red-600 text-white"
-                  type="danger"
-                  onClick={() => handleDecline(item)}
-                  icon={<DeleteOutlined />}
-                  style={{ marginLeft: "10px" }}
-                >
-                  Decline
-                </Button>
+                <div className="flex gap-4">
+                  <Button type="primary" onClick={() => handleAccept(item.id)}>
+                    Accept
+                  </Button>
+                  <Button
+                    className="bg-gray-600 text-white"
+                    type="default"
+                    onClick={() => handleDecline(item)}
+                    icon={<DeleteOutlined />}
+                  >
+                    Decline
+                  </Button>
+                </div>
               </Card>
             </List.Item>
           )}
