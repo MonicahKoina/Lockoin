@@ -1,4 +1,4 @@
-import { useEffect, useState, useContext } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import { useNavigate } from "react-router-dom";
 import PocketBaseContext from "../../pb/PocketBaseContext";
 import { List, Typography, Card, Button, message } from "antd";
@@ -30,56 +30,26 @@ const SellerOrders = () => {
     fetchOrders();
   }, [pb, sellerId]);
 
-  useEffect(() => {
-    const unsubscribe = pb.collection("orders").subscribe("*", async () => {
-      const updatedRecords = await pb.collection("orders").getFullList({
-        filter: `seller_id = "${sellerId}"`,
-        sort: "-created",
-        expand: "buyer_id",
-      });
-      setOrders(updatedRecords);
-    });
-
-    return () => {
-      unsubscribe();
-    };
-  }, [pb, sellerId]);
-
   const handleAccept = async (orderId) => {
     try {
       await pb.collection("orders").update(orderId, {
         status: "Accepted",
       });
       message.success("Order accepted!");
-      navigate(`/delivery/${orderId}`);
+      navigate(`/SellerDashboard/${orderId}`);
     } catch (error) {
       console.error("Error accepting order:", error);
       message.error("Failed to accept order.");
     }
   };
 
-  const handleDecline = async (order) => {
-    try {
-      await pb.collection("orders").update(order.id, {
-        status: "Declined",
-      });
-
-      await pb.collection("notifications").create({
-        user_id: order.buyer_id,
-        message: `Your order for ${order.product_name} has been declined by the seller.`,
-        type: "order_declined",
-      });
-
-      message.warning("Order declined. Buyer has been notified.");
-    } catch (error) {
-      console.error("Error declining order:", error);
-      message.error("Failed to decline order.");
-    }
+  const handleDecline = async (orderId) => {
+    // Redirect to the dispute page to provide a reason
+    navigate(`/SellerDispute/${orderId}`);
   };
 
   return (
     <div className="flex flex-col lg:flex-row lg:h-screen bg-white">
-      {/* Left Side - Image */}
       <div className="hidden lg:block lg:w-1/2 lg:h-full mt-10">
         <img
           src="https://i.pinimg.com/736x/df/0e/6c/df0e6cc2eacca5443b1dbba1471e8948.jpg"
@@ -88,7 +58,6 @@ const SellerOrders = () => {
         />
       </div>
 
-      {/* Right Side - Orders List */}
       <div className="w-full lg:w-1/2 p-6 overflow-y-auto">
         <Title level={3} className="text-center">
           Your Orders
@@ -118,9 +87,8 @@ const SellerOrders = () => {
                     Accept
                   </Button>
                   <Button
-                    className="bg-gray-600 text-white"
-                    type="default"
-                    onClick={() => handleDecline(item)}
+                    type="dashed"
+                    onClick={() => handleDecline(item.id)}
                     icon={<DeleteOutlined />}
                   >
                     Decline

@@ -2,7 +2,6 @@ import { useNavigate } from "react-router-dom";
 import { Button, Card } from "antd";
 import {
   BankOutlined,
-  DollarCircleOutlined,
   UnorderedListOutlined,
   WalletOutlined,
 } from "@ant-design/icons";
