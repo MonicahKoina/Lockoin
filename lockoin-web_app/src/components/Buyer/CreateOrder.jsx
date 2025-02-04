@@ -1,4 +1,4 @@
-import { useState, useContext } from "react";
+import { useState, useContext, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import {
   Button,
@@ -28,11 +28,12 @@ const CreateOrder = () => {
   const user = JSON.parse(localStorage.getItem("pocketbase_auth")) || {};
   const buyerId = user?.record?.id || "N/A";
 
-  const updateTotal = (newQuantity, newPrice) => {
-    const newTotal = newQuantity * newPrice;
+  // Automatically update total when quantity or price changes
+  useEffect(() => {
+    const newTotal = quantity * price;
     setTotal(newTotal);
     form.setFieldsValue({ total: newTotal });
-  };
+  }, [quantity, price]);
 
   const handleSubmit = async (values) => {
     try {
@@ -40,9 +41,9 @@ const CreateOrder = () => {
         buyer_id: buyerId,
         seller_name: values.businessName,
         product_name: values.product,
-        quantity: values.quantity,
-        price_per_item: values.price,
-        total_price: values.quantity * values.price,
+        quantity: quantity, // Use state value
+        price_per_item: price, // Use state value
+        total_price: total, // Use state value
         delivery_info: values.deliveryInfo,
         status: "pending",
       };
@@ -57,17 +58,8 @@ const CreateOrder = () => {
 
   const handleConfirmOrder = async () => {
     try {
-      const order = await pb.collection("orders").create(orderData);
-
-      // Notify the seller
-      await pb.collection("notifications").create({
-        seller_id: orderData.seller_id,
-        title: "New Order Received",
-        message: `You have received an order for ${orderData.quantity} ${orderData.product_name}(s).`,
-      });
-
-      message.success("Order confirmed and seller notified!");
-      // Redirect the buyer to the dashboard after confirmation
+      await pb.collection("orders").create(orderData);
+      message.success("Order confirmed!");
       navigate("/dashboard");
     } catch (error) {
       console.error(error);
@@ -80,16 +72,14 @@ const CreateOrder = () => {
   return (
     <div className="container mx-auto px-4 mt-2">
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6 items-center">
-        {/* Image Section */}
         <div className="hidden md:block">
           <img
-            src="https://i.pinimg.com/736x/6b/92/3e/6b923e6fb14abd3fc419850db9b2153a.jpg"
+            src="https://i.pinimg.com/736x/d5/a3/9d/d5a39d53dc65fb57ab961b6982519e22.jpg"
             alt="Order"
-            className="h-auto max-h-[70vh] w-auto mt-16 "
+            className="h-auto max-h-[70vh] w-auto mb-10"
           />
         </div>
 
-        {/* Form Section */}
         <div className="bg-white p-6 w-full">
           <Space direction="vertical" size="large" className="w-full">
             <Title level={3} className="text-center">
@@ -101,36 +91,38 @@ const CreateOrder = () => {
               onFinish={handleSubmit}
               initialValues={{ quantity: 1, price: 0, total: 0 }}
             >
-              <Form.Item
-                label="Seller's Business Name"
-                name="businessName"
-                rules={[
-                  { required: true, message: "Enter seller's business name." },
-                ]}
-              >
-                <Input placeholder="Enter seller's business name" />
-              </Form.Item>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <Form.Item
+                  label="Seller's Business Name"
+                  name="businessName"
+                  rules={[
+                    {
+                      required: true,
+                      message: "Enter seller's business name.",
+                    },
+                  ]}
+                >
+                  <Input placeholder="Enter seller's business name" />
+                </Form.Item>
 
-              <Form.Item
-                label="Product Name"
-                name="product"
-                rules={[{ required: true, message: "Enter product name." }]}
-              >
-                <Input placeholder="Enter product name" />
-              </Form.Item>
+                <Form.Item
+                  label="Product Name"
+                  name="product"
+                  rules={[{ required: true, message: "Enter product name." }]}
+                >
+                  <Input placeholder="Enter product name" />
+                </Form.Item>
+              </div>
 
-              <Form.Item
-                label="Product Quantity"
-                name="quantity"
-                rules={[{ required: true, message: "Enter a valid quantity." }]}
-              >
+              {/* Product Quantity Field */}
+              <Form.Item label="Product Quantity" name="quantity">
                 <div className="flex items-center gap-2">
                   <Button
                     icon={<MinusOutlined />}
                     onClick={() => {
                       const newQuantity = Math.max(1, quantity - 1);
                       setQuantity(newQuantity);
-                      updateTotal(newQuantity, price);
+                      form.setFieldsValue({ quantity: newQuantity });
                     }}
                   />
                   <InputNumber
@@ -138,7 +130,7 @@ const CreateOrder = () => {
                     value={quantity}
                     onChange={(value) => {
                       setQuantity(value);
-                      updateTotal(value, price);
+                      form.setFieldsValue({ quantity: value });
                     }}
                   />
                   <Button
@@ -146,47 +138,44 @@ const CreateOrder = () => {
                     onClick={() => {
                       const newQuantity = quantity + 1;
                       setQuantity(newQuantity);
-                      updateTotal(newQuantity, price);
+                      form.setFieldsValue({ quantity: newQuantity });
                     }}
                   />
                 </div>
               </Form.Item>
 
-              <Form.Item
-                label="Price (per item)"
-                name="price"
-                rules={[{ required: true, message: "Enter the price." }]}
-              >
-                <InputNumber
-                  min={0}
-                  formatter={(value) =>
-                    `KES ${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ",")
-                  }
-                  parser={(value) => value.replace(/KES\s?|(,*)/g, "")}
-                  onChange={(value) => {
-                    setPrice(value);
-                    updateTotal(quantity, value);
-                  }}
-                  className="w-full"
-                />
-              </Form.Item>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                {/* Price per Item Field */}
+                <Form.Item label="Price (per item)" name="price">
+                  <InputNumber
+                    min={0}
+                    formatter={(value) =>
+                      `KES ${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ",")
+                    }
+                    parser={(value) => value.replace(/KES\s?|[,]/g, "")}
+                    onChange={(value) => {
+                      setPrice(value);
+                      form.setFieldsValue({ price: value });
+                    }}
+                    className="w-full"
+                  />
+                </Form.Item>
 
-              <Form.Item label="Total Price" name="total">
-                <InputNumber
-                  disabled
-                  value={total}
-                  formatter={(value) =>
-                    `KES ${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ",")
-                  }
-                  className="w-full"
-                />
-              </Form.Item>
+                {/* Total Price Field */}
+                <Form.Item label="Total Price" name="total">
+                  <InputNumber
+                    disabled
+                    value={total}
+                    formatter={(value) =>
+                      `KES ${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ",")
+                    }
+                    className="w-full"
+                  />
+                </Form.Item>
+              </div>
 
-              <Form.Item
-                label="Delivery Information"
-                name="deliveryInfo"
-                rules={[{ required: true, message: "Enter delivery details." }]}
-              >
+              {/* Delivery Information */}
+              <Form.Item label="Delivery Information" name="deliveryInfo">
                 <Input.TextArea
                   rows={4}
                   placeholder="Enter delivery address or instructions"
@@ -206,11 +195,9 @@ const CreateOrder = () => {
       {/* Order Confirmation Modal */}
       <Modal
         title="Order Confirmation"
-        visible={isModalVisible}
+        open={isModalVisible}
         onOk={handleConfirmOrder}
         onCancel={() => setIsModalVisible(false)}
-        okText="Confirm Order"
-        cancelText="Cancel"
       >
         <p>
           <strong>Seller:</strong> {orderData?.seller_name}

@@ -6,7 +6,6 @@ import {
   SendOutlined,
   WalletOutlined,
 } from "@ant-design/icons";
-import Transaction from "/assets/Business Checking Account.jpeg";
 
 const BuyerDashboard = () => {
   const navigate = useNavigate();

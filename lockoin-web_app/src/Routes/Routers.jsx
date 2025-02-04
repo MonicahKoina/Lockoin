@@ -20,6 +20,7 @@ import Notification from "../components/Seller/Notification";
 import OrderVerification from "../components/Buyer/OrderVerification";
 import MyOrders from "../components/Buyer/MyOrders";
 import SellerDashboard from "../components/Seller/SellerDashboard";
+import SellerDispute from "../components/Seller/SellerDispute";
 
 function Routers() {
   return (
@@ -105,6 +106,14 @@ function Routers() {
           element={
             <ProtectedRoute>
               <Notification />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/SellerDispute"
+          element={
+            <ProtectedRoute>
+              <SellerDispute />
             </ProtectedRoute>
           }
         />

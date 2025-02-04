@@ -16,7 +16,6 @@ import {
   DashboardOutlined,
   ShoppingCartOutlined,
   UserOutlined,
-  NotificationFilled,
   LogoutOutlined,
   BellOutlined,
   CheckCircleFilled,
@@ -36,6 +35,7 @@ function AdminNavbar() {
     localStorage.removeItem("pocketbase_auth");
     navigate("/Login");
   };
+
   const buyerMenuItems = [
     {
       key: "1",
@@ -62,6 +62,7 @@ function AdminNavbar() {
       onClick: () => navigate("/orderverification"),
     },
   ];
+
   const menuItems = [
     {
       key: "1",
@@ -76,10 +77,10 @@ function AdminNavbar() {
       onClick: () => navigate("/orders"),
     },
     {
-      key: "3",
-      icon: <NotificationFilled />,
-      label: "Notifications",
-      onClick: () => navigate("/notification"),
+      key: "7",
+      icon: <CheckCircleFilled />,
+      label: "Dispute",
+      onClick: () => navigate("/SellerDispute"),
     },
   ];
 
@@ -105,22 +106,25 @@ function AdminNavbar() {
           </Badge>
 
           <Dropdown
-            // trigger={["click"]}
-            menu={{
-              items: [
-                {
-                  key: "profile",
-                  icon: <UserOutlined />,
-                  label: "Profile",
-                },
-                {
-                  key: "logout",
-                  icon: <LogoutOutlined />,
-                  label: "logout",
-                  danger: true,
-                },
-              ],
-            }}
+            overlay={
+              <Menu>
+                <Menu.Item
+                  key="profile"
+                  icon={<UserOutlined />}
+                  onClick={() => navigate("/profile")}
+                >
+                  Profile
+                </Menu.Item>
+                <Menu.Item
+                  key="logout"
+                  icon={<LogoutOutlined />}
+                  onClick={handleLogout} // Call handleLogout when logout is clicked
+                  danger
+                >
+                  Logout
+                </Menu.Item>
+              </Menu>
+            }
           >
             <Space align="center">
               <Avatar icon={<UserOutlined />} />
